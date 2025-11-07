@@ -38,12 +38,16 @@ High-level options:
 
 ## Quick Start (recommended)
 
-1. Build the image (recommended to build for linux/amd64 on Apple Silicon — see Apple Silicon section):
+1. Pull the pre-built image (recommended):
 
    ```bash
-   ./docker-run.sh build
-   # or
-   docker build -t cardano-ledger-key-extractor:latest .
+   docker pull ghcr.io/redoracle/cardano-ledger-key-extractor:latest
+   ```
+
+   Or build locally (for development):
+
+   ```bash
+   docker build -t ghcr.io/redoracle/cardano-ledger-key-extractor:latest .
    ```
 
 2. Run the full process interactively (will prompt for mnemonic unless you use non-interactive mode):
@@ -55,7 +59,7 @@ High-level options:
 3. Inspect output in `./output/`:
 
    ```bash
-   ls -la ./output/
+   ls -la output/
    ```
 
 The `./docker-run.sh` wrapper provides convenience commands: `build`, `generate`, `convert`, `full`, `test`, `test-keys`, `shell`, and `help`.
@@ -167,7 +171,6 @@ services:
 
 - Use GitHub Actions or another CI to build and publish images to `ghcr.io` (or Docker Hub).
 - Example strategy:
-
   - Build linux/amd64 image via buildx
   - Run minimal smoke tests inside the image (version checks for `cardano-cli` and `cardano-address`)
   - Push to registry with semver tags and `latest`

@@ -1,0 +1,93 @@
+{
+  "env": {
+    "node": true,
+    "es2022": true,
+    "jest": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:node/recommended",
+    "plugin:security/recommended"
+  ],
+  "plugins": ["node", "security"],
+  "parserOptions": {
+    "ecmaVersion": 2022,
+    "sourceType": "commonjs"
+  },
+  "rules": {
+    // Security-focused rules (keep these strict)
+    "no-eval": "error",
+    "no-implied-eval": "error",
+    "no-new-func": "error",
+    "no-script-url": "error",
+    "no-debugger": "error",
+    "no-alert": "error",
+
+    // Code quality (relaxed for CLI apps)
+    "no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }
+    ],
+    "no-undef": "error",
+    "prefer-const": "error",
+    "no-var": "error",
+    "no-console": "off", // CLI apps need console
+    "no-process-exit": "off", // CLI apps need process.exit
+
+    // Node.js best practices
+    "node/no-unpublished-require": "off",
+    "node/no-missing-require": "error",
+    "node/no-extraneous-require": "error",
+    "node/shebang": "off", // Allow executable scripts
+    "node/prefer-global/buffer": "error",
+    "node/prefer-global/console": "error",
+    "node/prefer-global/process": "error",
+
+    // Security plugin rules (tuned for crypto project)
+    "security/detect-buffer-noassert": "error",
+    "security/detect-child-process": "warn",
+    "security/detect-eval-with-expression": "error",
+    "security/detect-non-literal-fs-filename": "warn",
+    "security/detect-non-literal-regexp": "warn",
+    "security/detect-non-literal-require": "warn",
+    "security/detect-object-injection": "off", // Too many false positives in crypto code
+    "security/detect-possible-timing-attacks": "error",
+    "security/detect-pseudoRandomBytes": "error",
+    "security/detect-unsafe-regex": "error",
+
+    // Relaxed magic numbers for crypto constants
+    "no-magic-numbers": "off" // Crypto code has many valid constants
+  },
+  "overrides": [
+    {
+      "files": ["tests/**/*.js", "**/*.test.js"],
+      "rules": {
+        "security/detect-non-literal-fs-filename": "off",
+        "security/detect-non-literal-regexp": "off"
+      }
+    },
+    {
+      "files": ["scripts/**/*.js", "tests/test-*.js"],
+      "rules": {
+        "security/detect-child-process": "off"
+      }
+    },
+    {
+      "files": ["generate-mnemonic.js", "tests/test-performance.js"],
+      "rules": {
+        "node/shebang": "off"
+      }
+    }
+  ],
+  "ignorePatterns": [
+    "node_modules/",
+    "coverage/",
+    "dist/",
+    "build/",
+    "docs/",
+    "*.md"
+  ]
+}

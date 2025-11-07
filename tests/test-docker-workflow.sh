@@ -18,7 +18,7 @@ echo ""
 
 # Test 1: Build the image
 echo -e "${YELLOW}Test 1: Building Docker image...${NC}"
-if ./docker-run.sh build; then
+if ../docker-run.sh build; then
     echo -e "${GREEN}✅ Build successful${NC}"
 else
     echo -e "${RED}❌ Build failed${NC}"
@@ -28,7 +28,7 @@ echo ""
 
 # Test 2: Run test workflow
 echo -e "${YELLOW}Test 2: Testing complete workflow...${NC}"
-if ./docker-run.sh test; then
+if ../docker-run.sh test; then
     echo -e "${GREEN}✅ Test workflow successful${NC}"
 else
     echo -e "${RED}❌ Test workflow failed${NC}"
@@ -66,10 +66,10 @@ echo ""
 
 # Test 4: Test existing directory handling
 echo -e "${YELLOW}Test 4: Testing existing directory handling...${NC}"
-if ./docker-run.sh test; then
+if ../docker-run.sh test; then
     echo -e "${GREEN}✅ Existing directory handled gracefully${NC}"
 else
-    echo -e "${RED}❌ Failed to handle existing directory${NC}"
+    echo -e "${RED}❌ Existing directory handling failed${NC}"
     exit 1
 fi
 echo ""
@@ -96,6 +96,6 @@ echo "🎉 All Docker workflow tests passed!"
 echo "The Docker setup is working correctly and ready for use."
 echo ""
 echo "Next steps:"
-echo "  • For production: ./docker-run.sh full"
-echo "  • For development: ./docker-run.sh shell"
-echo "  • For help: ./docker-run.sh help"
+echo "  • For production: ../docker-run.sh full"
+echo "  • For development: ../docker-run.sh shell"
+echo "  • For help: ../docker-run.sh help"

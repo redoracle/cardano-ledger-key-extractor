@@ -26,7 +26,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Default values
-IMAGE_NAME="cardano-ledger-key-extractor"
+IMAGE_NAME="ghcr.io/redoracle/cardano-ledger-key-extractor"
 TAG="latest"
 PUSH=false
 LOAD=true

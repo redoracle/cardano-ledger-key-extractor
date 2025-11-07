@@ -506,16 +506,51 @@ sudo reboot
 
 ## Reporting Security Issues
 
-If you discover a security vulnerability:
+### 🚨 Security Vulnerability Disclosure
 
-1. **DO NOT** open a public issue
-2. Email the maintainer privately with:
-   - Description of the vulnerability
-   - Steps to reproduce
-   - Potential impact
-   - Suggested fix (if any)
+We take all security vulnerabilities seriously. If you discover a security issue, please help us maintain the security of this project and its users.
 
-3. Allow reasonable time for fix before public disclosure
+#### How to Report
+
+**DO NOT** create a public GitHub issue for security vulnerabilities.
+
+Instead, please report security vulnerabilities by:
+
+1. **Email**: Send details to [security@redoracle.com](mailto:security@redoracle.com)
+2. **GitHub Security Advisories**: Use [GitHub's private vulnerability reporting](https://github.com/redoracle/cardano-ledger-key-extractor/security/advisories/new)
+
+#### What to Include
+
+Please include the following information in your report:
+
+- Description of the vulnerability
+- Steps to reproduce the issue
+- Potential impact assessment
+- Suggested fix (if known)
+- Your contact information
+
+#### Response Timeline
+
+- **Acknowledgment**: Within 24 hours
+- **Initial Assessment**: Within 72 hours
+- **Detailed Response**: Within 7 days
+- **Fix Timeline**: Depends on severity (Critical: 1-7 days, High: 7-30 days)
+
+#### Responsible Disclosure
+
+- Allow reasonable time for fix before public disclosure
+- We will keep you informed of our progress
+- We will credit you in our security advisories (if desired)
+- We appreciate coordinated disclosure to protect users
+
+#### Security Features & Automated Scanning
+
+This project includes multiple layers of automated security:
+
+- **CodeQL Analysis**: Continuous static analysis for security vulnerabilities
+- **Dependency Scanning**: Automated vulnerability detection with Snyk and Dependabot
+- **Container Security**: Multi-layer Docker image scanning with Trivy
+- **SAST/DAST**: Static and dynamic application security testing
 
 ---
 

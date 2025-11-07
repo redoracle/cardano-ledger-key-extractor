@@ -56,7 +56,7 @@ git clone https://github.com/YOUR_USERNAME/cardano-ledger-key-extractor.git
 cd cardano-ledger-key-extractor
 
 # Add upstream remote
-git remote add upstream https://github.com/ORIGINAL_OWNER/cardano-ledger-key-extractor.git
+git remote add upstream https://github.com/redoracle/cardano-ledger-key-extractor.git
 
 # Verify remotes
 git remote -v
@@ -96,27 +96,23 @@ For local testing:
 We welcome various types of contributions:
 
 1. **Bug Reports**
-
    - Clear description of the issue
    - Steps to reproduce
    - Expected vs actual behavior
    - System information (OS, versions)
 
 2. **Feature Requests**
-
    - Clear description of the feature
    - Use case and benefits
    - Potential implementation approach
 
 3. **Code Contributions**
-
    - Bug fixes
    - New features
    - Performance improvements
    - Documentation updates
 
 4. **Documentation**
-
    - Fixing typos or errors
    - Improving clarity
    - Adding examples
@@ -132,13 +128,11 @@ We welcome various types of contributions:
 ### Before You Start
 
 1. **Check Existing Issues**
-
    - Search for existing issues or pull requests
    - Avoid duplicate work
    - Comment on existing issues if you want to work on them
 
 2. **Discuss Major Changes**
-
    - Open an issue first for significant changes
    - Get feedback on your approach
    - Ensure alignment with project goals
@@ -271,13 +265,11 @@ node index.js --test
 For changes affecting cryptographic operations or key handling:
 
 1. **Extra Review**
-
    - Request review from maintainers with crypto expertise
    - Provide detailed explanation of changes
    - Include references to specifications (BIP39, CIP-1852, etc.)
 
 2. **Testing**
-
    - Test against known test vectors
    - Verify output matches Ledger device
    - Check for timing attacks or information leakage
@@ -354,13 +346,11 @@ Fixes #123
 ### PR Review Process
 
 1. **Automated Checks**
-
    - Tests must pass
    - Code style checks (when CI is set up)
    - Coverage requirements met
 
 2. **Human Review**
-
    - At least one maintainer approval required
    - Address all review comments
    - Re-request review after changes

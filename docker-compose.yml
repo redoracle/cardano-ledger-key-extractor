@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
       platforms:
         - linux/amd64
-    image: cardano-ledger-key-extractor:latest
+    image: ghcr.io/redoracle/cardano-ledger-key-extractor:latest
     platform: linux/amd64
     container_name: cardano-key-extractor
     volumes:

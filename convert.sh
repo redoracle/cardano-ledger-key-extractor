@@ -13,6 +13,10 @@
 #   ADDRESS_INDEX     - Address index (default: 0)
 #   OUTPUT_DIR        - Output directory (default: interactive prompt or command line arg)
 #   NON_INTERACTIVE   - Set to 1 to skip prompts and use defaults (for Docker)
+#   POOL_NAME         - Staking pool name for directory naming (optional)
+#   ENABLE_ENCRYPTION - Enable output encryption with OpenSSL (default: true)
+#   ENCRYPTION_PASSWORD - Password for encryption (if not set, will prompt)
+#   SKIP_ENCRYPTION   - Set to 1 to disable encryption completely
 #
 # ⚠️  SECURITY WARNING: Run this only on an air-gapped, offline machine!
 #
@@ -49,6 +53,128 @@ error() {
     echo -e "${RED}✗${NC} $1" >&2
 }
 
+# Function to generate output directory name
+generate_output_dir_name() {
+    local base_name
+    local pool_name="${POOL_NAME:-}"
+    
+    # Explicitly check if POOL_NAME is empty, unset, or whitespace-only
+    if [ -z "$pool_name" ] || [ -z "${pool_name// /}" ]; then
+        base_name="Key"
+    else
+        base_name="$pool_name"
+    fi
+    
+    local timestamp=$(date +"%Y%m%d_%H%M%S")
+    echo "${base_name}_${timestamp}"
+}
+
+# Function to prompt for encryption password
+prompt_encryption_password() {
+    local password=""
+    local confirm_password=""
+    
+    echo ""
+    echo "=== Encryption Setup ==="
+    echo ""
+    
+    while true; do
+        echo -n "Enter encryption password (hidden): "
+        read -s password
+        echo ""
+        
+        if [[ -z "$password" ]]; then
+            error "Password cannot be empty"
+            continue
+        fi
+        
+        if [[ ${#password} -lt 8 ]]; then
+            warning "Password is less than 8 characters (recommended minimum)"
+            echo -n "Continue anyway? (y/N): "
+            read -n 1 response
+            echo ""
+            if [[ "$response" != "y" && "$response" != "Y" ]]; then
+                continue
+            fi
+        fi
+        
+        echo -n "Confirm encryption password (hidden): "
+        read -s confirm_password
+        echo ""
+        
+        if [[ "$password" == "$confirm_password" ]]; then
+            echo "$password"
+            return 0
+        else
+            error "Passwords do not match. Please try again."
+        fi
+    done
+}
+
+# Function to encrypt output directory
+encrypt_output_directory() {
+    local dir="$1"
+    local password="$2"
+    
+    progress "Encrypting output directory..."
+    
+    # Change to the parent directory to avoid including full path in archive
+    local dir_parent=$(dirname "$dir")
+    local dir_name=$(basename "$dir")
+    local archive_name="${dir_name}.tar.gz.enc"
+    
+    pushd "$dir_parent" >/dev/null
+    
+    # Create encrypted archive using OpenSSL AES-256 with PBKDF2
+    # Use secure password passing via temporary file instead of command line
+    local temp_pass_file=$(mktemp)
+    echo "$password" > "$temp_pass_file"
+    chmod 600 "$temp_pass_file"
+    
+    if tar -czf - "$dir_name" | "$OPENSSL" enc -e -aes256 -iter 10000 -pbkdf2 -pass file:"$temp_pass_file" -out "$archive_name"; then
+        success "Directory encrypted to: $archive_name"
+        
+        # Clean up temporary password file
+        rm -f "$temp_pass_file"
+        
+        # Securely delete the original directory
+        if command -v shred >/dev/null 2>&1; then
+            # Use shred if available (Linux)
+            find "$dir_name" -type f -exec shred -vfz -n 3 {} \;
+            rm -rf "$dir_name"
+        elif command -v rm >/dev/null 2>&1; then
+            # Fallback to rm (macOS and others)
+            rm -rf "$dir_name"
+        fi
+        
+        success "Original directory securely deleted"
+        
+        echo ""
+        echo "=== ENCRYPTION SUMMARY ==="
+        echo "Encrypted file: $(pwd)/$archive_name"
+        echo "Encryption: AES-256 with PBKDF2 (10000 iterations)"
+        echo ""
+        warning "Store the encryption password securely!"
+        warning "Without the password, the encrypted file cannot be decrypted!"
+        echo ""
+        echo "To decrypt later, use:"
+        echo "  mkdir decrypted_output"
+        echo "  echo \$PASSWORD > temp_pass.txt && chmod 600 temp_pass.txt"
+        echo "  $OPENSSL enc -d -aes256 -iter 10000 -pbkdf2 -in $archive_name -pass file:temp_pass.txt | tar xz -C decrypted_output"
+        echo "  rm -f temp_pass.txt"
+        echo "  (Replace \$PASSWORD with your encryption password)"
+        echo ""
+        
+        popd >/dev/null
+        return 0
+    else
+        error "Encryption failed"
+        rm -f "$temp_pass_file"
+        popd >/dev/null
+        return 1
+    fi
+}
+
 # Check required tools
 progress "Checking required tools..."
 
@@ -70,6 +196,16 @@ BECH32=${BECH32:=$( which bech32 2>/dev/null || true )}
 [[ -z "$BECH32" ]] && {
     warning "bech32 tool not found - this may be OK for newer cardano-address versions"
     # Don't exit, some cardano-address versions don't need it
+}
+
+# Check for OpenSSL (required for encryption feature)
+OPENSSL=${OPENSSL:=$( which openssl 2>/dev/null || true )}
+[[ -z "$OPENSSL" ]] && {
+    if [[ "${SKIP_ENCRYPTION:-0}" != "1" ]] && [[ "${ENABLE_ENCRYPTION:-true}" == "true" ]]; then
+        warning "OpenSSL not found - encryption will be disabled"
+        warning "To enable encryption, install OpenSSL or set SKIP_ENCRYPTION=1"
+        SKIP_ENCRYPTION=1
+    fi
 }
 
 success "Required tools found"
@@ -140,8 +276,9 @@ if [[ "$#" -eq 0 ]]; then
     if [[ "${NON_INTERACTIVE:-0}" == "1" ]]; then
         # Use defaults for Docker/automated runs
         BASE_OUTPUT_DIR="${OUTPUT_DIR:-/output}"
-        # Create timestamped subdirectory to avoid conflicts
-        OUT_DIR="$BASE_OUTPUT_DIR/keys_$(date +%Y%m%d_%H%M%S)"
+        # Create directory with pool name and timestamp
+        GENERATED_DIR_NAME=$(generate_output_dir_name)
+        OUT_DIR="$BASE_OUTPUT_DIR/$GENERATED_DIR_NAME"
         
         # Master key must come from stdin in non-interactive mode
         if [[ ! -t 0 ]]; then
@@ -167,8 +304,14 @@ if [[ "$#" -eq 0 ]]; then
         warning "Ensure this machine is OFFLINE and air-gapped!"
         echo ""
         
-        # Use OUTPUT_DIR env var as default if set
-        DEFAULT_OUT_DIR="${OUTPUT_DIR:-./ledger_output_$(date +%s)}"
+        # Use OUTPUT_DIR env var as default, or generate timestamped name
+        if [[ -n "${OUTPUT_DIR:-}" ]]; then
+            DEFAULT_OUT_DIR="$OUTPUT_DIR"
+        else
+            GENERATED_DIR_NAME=$(generate_output_dir_name)
+            DEFAULT_OUT_DIR="./$GENERATED_DIR_NAME"
+        fi
+        
         read -p "Output directory [$DEFAULT_OUT_DIR]: " OUT_DIR
         [[ -z "$OUT_DIR" ]] && OUT_DIR="$DEFAULT_OUT_DIR"
         
@@ -639,6 +782,66 @@ echo "  • Make encrypted backups"
 echo "  • Keep this machine offline"
 echo ""
 success "Key generation completed successfully!"
+
+# Handle encryption if enabled
+if [[ "${SKIP_ENCRYPTION:-0}" != "1" ]] && [[ "${ENABLE_ENCRYPTION:-true}" == "true" ]] && [[ -n "$OPENSSL" ]]; then
+    echo ""
+    echo "=== OUTPUT ENCRYPTION ==="
+    echo ""
+    
+    # Get encryption password
+    if [[ -n "${ENCRYPTION_PASSWORD:-}" ]]; then
+        ENCRYPTION_PWD="$ENCRYPTION_PASSWORD"
+        success "Using provided encryption password"
+        # Move out of the directory before encrypting it
+        popd >/dev/null
+        if encrypt_output_directory "$OUT_DIR" "$ENCRYPTION_PWD"; then
+            success "Directory successfully encrypted!"
+            echo ""
+            echo "=== ENCRYPTED OUTPUT SUMMARY ==="
+            echo "Encrypted file: $(basename ${OUT_DIR}).tar.gz.enc"
+            echo "Original directory: DELETED for security"
+            echo ""
+            exit 0
+        else
+            error "Encryption failed - original directory preserved"
+            pushd "$OUT_DIR" >/dev/null
+        fi
+    elif [[ "${NON_INTERACTIVE:-0}" == "1" ]]; then
+        warning "Non-interactive mode: Encryption disabled (no password provided)"
+        warning "Set ENCRYPTION_PASSWORD environment variable to enable encryption"
+    else
+        progress "Encryption is enabled by default for security"
+        echo "You can disable encryption by setting SKIP_ENCRYPTION=1"
+        echo ""
+        echo -n "Enable encryption? (Y/n): "
+        read -n 1 encrypt_choice
+        echo ""
+        
+        if [[ "$encrypt_choice" == "n" || "$encrypt_choice" == "N" ]]; then
+            warning "Encryption skipped by user choice"
+        else
+            ENCRYPTION_PWD=$(prompt_encryption_password)
+            if [[ -n "$ENCRYPTION_PWD" ]]; then
+                # Move out of the directory before encrypting it
+                popd >/dev/null
+                if encrypt_output_directory "$OUT_DIR" "$ENCRYPTION_PWD"; then
+                    success "Directory successfully encrypted!"
+                    echo ""
+                    echo "=== ENCRYPTED OUTPUT SUMMARY ==="
+                    echo "Encrypted file: $(basename ${OUT_DIR}).tar.gz.enc"
+                    echo "Original directory: DELETED for security"
+                    echo ""
+                    exit 0
+                else
+                    error "Encryption failed - original directory preserved"
+                    pushd "$OUT_DIR" >/dev/null
+                fi
+            fi
+        fi
+    fi
+fi
+
 echo ""
 echo "Output directory: $OUT_DIR"
 echo "Review: cat $OUT_DIR/generation-log.txt"

@@ -10,6 +10,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
     gzip \
     ca-certificates \
     wget \
+    openssl \
     && apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
 # Set working directory
@@ -29,8 +30,8 @@ RUN chmod +x verify-installation.sh convert.sh generate-mnemonic.js && \
     echo "Pre-built Cardano binaries may not be available for $ARCH."; \
     echo "Consider running: docker build --platform linux/amd64 ..."; \
     fi && \
-    # Run non-interactively (auto-install), skip tests in Docker build
-    yes | ./verify-installation.sh --skip-tests || true && \
+    # Run with auto-install and skip tests in Docker build
+    ./verify-installation.sh --auto-install --skip-tests || true && \
     # Add bin to PATH permanently
     if [ -d "./bin" ]; then \
     cp -r ./bin/* /usr/local/bin/ 2>/dev/null || true; \

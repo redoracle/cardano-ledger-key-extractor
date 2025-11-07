@@ -9,10 +9,15 @@ set -uo pipefail
 
 # Parse command line arguments
 SKIP_TESTS=false
+AUTO_INSTALL=false
 for arg in "$@"; do
     case $arg in
         --skip-tests)
             SKIP_TESTS=true
+            shift
+            ;;
+        --auto-install)
+            AUTO_INSTALL=true
             shift
             ;;
         --test)
@@ -390,6 +395,11 @@ check_command "cardano-address" "4.0.1" "required"
 check_command "bech32" "1.1.720" "optional"
 echo ""
 
+# Check Security Tools
+echo "=== Security Tools ==="
+check_command "openssl" "1.1.0" "required"
+echo ""
+
 # Offer to install missing Cardano tools
 if [ "$MISSING_CARDANO_CLI" = true ] || [ "$MISSING_CARDANO_ADDRESS" = true ]; then
     echo "=========================================="
@@ -409,8 +419,14 @@ if [ "$MISSING_CARDANO_CLI" = true ] || [ "$MISSING_CARDANO_ADDRESS" = true ]; t
     echo "Would you like to automatically download and install the missing tools?"
     echo "This will download the latest official releases from GitHub."
     echo ""
-    read -p "Install missing Cardano tools? [y/N] " -n 1 -r
-    echo ""
+    
+    if [ "$AUTO_INSTALL" = true ]; then
+        echo "Auto-install mode enabled, proceeding with installation..."
+        REPLY="y"
+    else
+        read -p "Install missing Cardano tools? [y/N] " -n 1 -r
+        echo ""
+    fi
     
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         if [ "$MISSING_CARDANO_CLI" = true ]; then

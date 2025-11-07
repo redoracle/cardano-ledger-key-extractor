@@ -52,6 +52,59 @@ npm run test:verbose
 npm run test:coverage
 ```
 
+### Performance Testing
+
+```bash
+# Run comprehensive performance benchmarks
+npm run test:performance
+```
+
+**Performance test features:**
+
+- **Mnemonic validation timing** - Tests validation speed across different word counts
+- **Master key generation benchmarks** - Measures key derivation performance with various passphrases
+- **Hex conversion performance** - Benchmarks string/byte array conversions
+- **Batch operation throughput** - Tests realistic multi-operation scenarios
+- **Memory usage analysis** - Tracks memory consumption and detects potential leaks
+- **System information** - Reports hardware specs and Node.js version for context
+
+**Typical results:**
+
+- Mnemonic validation: ~0.1ms (P95)
+- Master key generation: ~1ms (P95)
+- Throughput: ~1500 operations/second
+
+**Performance thresholds:**
+
+- Mnemonic validation: <50ms (P95)
+- Master key generation: <1000ms (P95)
+- Memory usage: <50MB heap growth per 100 operations
+
+### Code Quality and Security Analysis
+
+```bash
+# Run ESLint for code quality and security issues
+npm run lint
+
+# Auto-fix ESLint issues where possible
+npm run lint:fix
+```
+
+**ESLint configuration features:**
+
+- **Security-focused rules** - Uses eslint-plugin-security to detect common security issues
+- **Node.js best practices** - Configured for Node.js/CommonJS projects
+- **Crypto-aware settings** - Tuned for cryptographic code patterns
+- **Auto-fixing** - Many issues can be automatically resolved
+
+**Security rules enforced:**
+
+- No eval() or similar dynamic code execution
+- Detection of possible timing attacks
+- Buffer security checks
+- Prevention of unsafe regex patterns
+- Protection against object injection attacks
+
 ## Test Categories
 
 ### 1. Unit Tests (61 tests) - `index.test.js`

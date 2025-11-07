@@ -15,6 +15,51 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - VSCode extension support
 - Multi-language support for documentation
 
+## [2.1.0] - 2025-11-07
+
+### Added
+
+- 🔐 **OpenSSL Encryption Feature**
+  - AES-256 encryption with PBKDF2 key derivation (10,000 iterations)
+  - Automatic compression and encryption of output directories
+  - Interactive password prompts with confirmation
+  - Secure deletion of original directories after encryption
+  - Environment variable controls: `ENABLE_ENCRYPTION`, `SKIP_ENCRYPTION`, `ENCRYPTION_PASSWORD`
+  - Comprehensive decryption instructions provided
+- 📁 **Dynamic Directory Naming**
+  - Pool name-based directory naming with `POOL_NAME` environment variable
+  - Timestamp-based naming format: `{PoolName}_{YYYYMMDD}_{HHMMSS}`
+  - Fallback to default `Key_{timestamp}` pattern when pool name not provided
+  - Support for special characters in pool names
+- 🧪 **Comprehensive Test Coverage**
+  - `test-encryption.sh` - Complete OpenSSL functionality testing
+  - `test-directory-naming.sh` - Directory naming pattern validation
+  - New Jest test suites for encryption and directory features
+  - Additional npm test scripts: `test:encryption`, `test:directory-naming`, `test:features`
+- 📦 **Enhanced Docker Support**
+  - OpenSSL package added to Docker image for encryption support
+  - Updated `verify-installation.sh` to check OpenSSL availability
+  - Encryption feature testing in Docker environments
+
+### Changed
+
+- **convert.sh** - Major enhancements:
+  - Added `generate_output_dir_name()` function for dynamic directory naming
+  - Added `prompt_encryption_password()` function for secure password input
+  - Added `encrypt_output_directory()` function for OpenSSL encryption
+  - Enhanced error handling and user feedback
+  - Updated help text with new environment variables
+- **Dockerfile** - Updated to include OpenSSL package
+- **verify-installation.sh** - Added OpenSSL dependency check
+- **package.json** - Updated to version 2.1.0 with new test scripts
+
+### Security
+
+- Encryption passwords are prompted securely without echo
+- Original directories are securely deleted after encryption
+- Encryption uses industry-standard AES-256 with PBKDF2
+- Clear warnings about password storage and recovery
+
 ## [2.0.0] - 2025-11-07
 
 ### Added

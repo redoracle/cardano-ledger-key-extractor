@@ -1,8 +1,8 @@
 {
-  "$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/package.json",
+  "$schema": "https://www.schemastore.org/package.json",
   "name": "cardano-ledger-key-extractor",
-  "version": "2.0.0",
-  "description": "Extract Cardano Shelley staking keys from a Ledger wallet by deriving the Ledger master key from BIP39 recovery phrase",
+  "version": "2.1.0",
+  "description": "Extract Cardano Shelley staking keys from a Ledger wallet by deriving the Ledger master key from BIP39 recovery phrase. Features dynamic directory naming and OpenSSL encryption.",
   "main": "index.js",
   "types": "index.d.ts",
   "bin": {
@@ -12,20 +12,35 @@
     "generate": "node index.js",
     "generate:test": "node index.js --test",
     "generate:help": "node index.js --help",
+    "generate:fresh": "node generate-mnemonic.js",
     "convert": "./convert.sh",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:verbose": "jest --verbose",
     "test:integration": "node index.js --test",
-    "test:docker": "jest docker.test.js --verbose --detectOpenHandles",
-    "test:docker-workflow": "./test-docker-workflow.sh",
-    "test:unit": "jest index.test.js --verbose",
+    "test:docker": "jest tests/docker.test.js --verbose --detectOpenHandles",
+    "test:docker-workflow": "./tests/test-docker-workflow.sh",
+    "test:unit": "jest tests/index.test.js --verbose",
     "test:all": "jest --verbose --detectOpenHandles",
-    "lint": "echo 'Install eslint for linting: npm install --save-dev eslint'",
+    "test:fresh": "jest --testNamePattern=\"Fresh BIP39\" --verbose",
+    "test:fresh-cmdline": "./tests/test-fresh-seed.sh",
+    "test:fresh-docker": "./tests/test-fresh-docker.sh",
+    "test:fresh-complete": "npm run test:fresh && npm run test:fresh-cmdline && npm run test:fresh-docker",
+    "test:complete": "npm run test:all && npm run test:fresh-complete",
+    "test:encryption": "./tests/test-encryption.sh",
+    "test:directory-naming": "./tests/test-directory-naming.sh",
+    "test:features": "npm run test:encryption && npm run test:directory-naming",
+    "test:full": "npm run test:complete && npm run test:features",
+    "test:performance": "node tests/test-performance.js",
+    "lint": "eslint . --ext .js",
+    "lint:fix": "eslint . --ext .js --fix",
     "format": "prettier --write '**/*.{js,ts,jsx,tsx,json,css,md}'"
   },
   "jest": {
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ],
     "testEnvironment": "node",
     "collectCoverageFrom": [
       "index.js"
@@ -33,10 +48,20 @@
     "coveragePathIgnorePatterns": [
       "/node_modules/"
     ],
-    "testMatch": [
-      "**/__tests__/**/*.js",
-      "**/?(*.)+(spec|test).js"
-    ]
+    "coverageThreshold": {
+      "global": {
+        "branches": 28,
+        "functions": 53,
+        "lines": 34,
+        "statements": 35
+      },
+      "./index.js": {
+        "branches": 28,
+        "functions": 53,
+        "lines": 34,
+        "statements": 35
+      }
+    }
   },
   "keywords": [
     "cardano",
@@ -54,12 +79,16 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ilap/cardano-ledger-key-extractor"
+    "url": "https://github.com/redoracle/cardano-ledger-key-extractor"
   },
   "dependencies": {
     "bip39": "^3.0.2"
   },
   "devDependencies": {
+    "eslint": "^8.57.1",
+    "eslint-config-node": "^4.1.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-security": "^1.7.1",
     "jest": "^29.7.0"
   },
   "engines": {

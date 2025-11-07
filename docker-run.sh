@@ -28,7 +28,7 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 # Image name
-IMAGE_NAME="cardano-ledger-key-extractor:latest"
+IMAGE_NAME="ghcr.io/redoracle/cardano-ledger-key-extractor:latest"
 
 # Output directory
 OUTPUT_DIR="./output"
