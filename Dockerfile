@@ -1,4 +1,4 @@
-FROM node:20-slim AS base
+FROM node:25-slim AS base
 
 # Install dependencies (Debian-based, native glibc support) and upgrade packages to reduce known vulnerabilities
 RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
