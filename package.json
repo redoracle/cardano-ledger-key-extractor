@@ -1,0 +1,68 @@
+{
+  "name": "cardano-ledger-key-extractor",
+  "version": "2.0.0",
+  "description": "Extract Cardano Shelley staking keys from a Ledger wallet by deriving the Ledger master key from BIP39 recovery phrase",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "bin": {
+    "generate-master-key": "./index.js"
+  },
+  "scripts": {
+    "generate": "node index.js",
+    "generate:test": "node index.js --test",
+    "generate:help": "node index.js --help",
+    "convert": "./convert.sh",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:verbose": "jest --verbose",
+    "test:integration": "node index.js --test",
+    "lint": "echo 'Install eslint for linting: npm install --save-dev eslint'",
+    "format": "echo 'Install prettier for formatting: npm install --save-dev prettier'"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "collectCoverageFrom": [
+      "index.js"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "testMatch": [
+      "**/__tests__/**/*.js",
+      "**/?(*.)+(spec|test).js"
+    ]
+  },
+  "keywords": [
+    "cardano",
+    "ledger",
+    "ada",
+    "cryptocurrency",
+    "wallet",
+    "bip39",
+    "hdwallet",
+    "shelley",
+    "staking",
+    "keys"
+  ],
+  "author": "ilap",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ilap/cardano-ledger-key-extractor"
+  },
+  "dependencies": {
+    "bip39": "^3.0.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "os": [
+    "linux",
+    "darwin",
+    "win32"
+  ]
+}
