@@ -2,59 +2,70 @@
 
 ## Overview
 
-This document describes the comprehensive test suite for the Cardano Ledger Key Extraction Tool.
+This document describes the comprehensive test suite for the Cardano Ledger Key Extraction Tool, including unit tests, integration tests, and Docker workflow validation.
 
 ## Test Framework
 
 - **Framework**: Jest 29.7.0
-- **Test File**: `index.test.js`
-- **Total Tests**: 61 unit tests
-- **Coverage**: Functions exported from `index.js`
+- **Unit Tests**: `index.test.js` (61 tests)
+- **Docker Tests**: `docker.test.js` (35+ tests)
+- **Workflow Test**: `test-docker-workflow.sh` (integration)
+- **Coverage**: All exported functions and Docker workflows
 
 ## Running Tests
 
-### Quick Test
+### Quick Test (Unit Only)
 
 ```bash
 npm test
 ```
 
-### Verbose Output
+### All Test Categories
 
 ```bash
-npm run test:verbose
-```
+# Unit tests only
+npm run test:unit
 
-### Watch Mode (Development)
+# Docker integration tests (requires Docker)
+npm run test:docker
 
-```bash
-npm run test:watch
-```
+# Complete Docker workflow validation
+npm run test:docker-workflow
 
-### Coverage Report
+# All tests (unit + Docker)
+npm run test:all
 
-```bash
-npm run test:coverage
-```
-
-### Integration Test
-
-```bash
+# Integration test with actual tool
 npm run test:integration
+```
+
+### Development
+
+```bash
+# Watch mode for development
+npm run test:watch
+
+# Verbose output for debugging
+npm run test:verbose
+
+# Coverage report
+npm run test:coverage
 ```
 
 ## Test Categories
 
-### 1. Utility Functions (14 tests)
+### 1. Unit Tests (61 tests) - `index.test.js`
 
-#### `toByteArray` (4 tests)
+#### Utility Functions (14 tests)
+
+##### `toByteArray` (4 tests)
 
 - ✅ Converts hex string to Uint8Array
 - ✅ Handles empty string
 - ✅ Handles lowercase and uppercase hex
 - ✅ Handles long hex strings (192 chars)
 
-#### `toHexString` (5 tests)
+##### `toHexString` (5 tests)
 
 - ✅ Converts Uint8Array to hex string
 - ✅ Handles empty array
@@ -378,19 +389,16 @@ abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon 
 ## Future Test Improvements
 
 1. **Bash Script Tests**
-
    - Add shellcheck for linting
    - Add bats (Bash Automated Testing System) tests
    - Mock cardano-cli/cardano-address calls
 
 2. **Integration Tests**
-
    - Test full workflow with Docker containers
    - Test on multiple OS (Linux, macOS, Windows/WSL2)
    - Test with different tool versions
 
 3. **Security Tests**
-
    - Automated security scanning
    - Memory leak detection
    - Process monitoring tests
@@ -399,6 +407,141 @@ abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon 
    - Benchmark suite
    - Memory usage profiling
    - CPU usage analysis
+
+## Docker Testing Suite
+
+### 2. Docker Integration Tests (35+ tests) - `docker.test.js`
+
+The Docker test suite validates containerized workflows and ensures proper isolation, security, and functionality.
+
+#### Prerequisites
+
+- Docker installed and running
+- Tests automatically skip if Docker is unavailable
+- Apple Silicon support with automatic platform detection
+
+#### Test Categories Docker
+
+##### Docker Image Building (4 tests)
+
+- ✅ Builds Docker image successfully
+- ✅ Contains required tools (cardano-cli, cardano-address, node)
+- ✅ Has generate-mnemonic.js script
+- ✅ Proper file permissions (executable scripts)
+
+##### Container Security (3 tests)
+
+- ✅ Runs as non-root user (cardano)
+- ✅ No network access when configured
+- ✅ Read-only filesystem with tmpfs support
+
+##### Key Generation Workflows (3 tests)
+
+- ✅ Generates master key with test mnemonic
+- ✅ Generates fresh 24-word BIP39 mnemonic
+- ✅ Handles existing output directories gracefully
+
+##### Full Conversion Workflow (3 tests)
+
+- ✅ Converts master key to cardano keys
+- ✅ Generates expected test address format
+- ✅ Complete pipeline: generate → derive → convert
+
+##### Docker Script Wrapper (3 tests)
+
+- ✅ Executable docker-run.sh script
+- ✅ Shows help with all commands
+- ✅ Detects Apple Silicon platform correctly
+
+##### Error Handling (3 tests)
+
+- ✅ Handles invalid master key gracefully
+- ✅ Handles missing volume mount
+- ✅ Validates mnemonic input
+
+#### Shell Script Tests (6 tests)
+
+##### generate-mnemonic.js
+
+- ✅ Executable permissions
+- ✅ Generates valid 24-word mnemonic
+- ✅ Generates different mnemonics each time
+
+##### convert.sh directory handling
+
+- ✅ Creates new directory when missing
+- ✅ Cleans existing directory in NON_INTERACTIVE mode
+- ✅ Handles directory conflicts properly
+
+#### Configuration Tests (2 tests)
+
+- ✅ Valid docker-compose.yml with security settings
+- ✅ Executable build-multiarch.sh script
+
+### 3. Docker Workflow Validation - `test-docker-workflow.sh`
+
+End-to-end integration test that validates the complete Docker workflow:
+
+#### Test Sequence
+
+1. **Build Test**: Builds Docker image successfully
+2. **Workflow Test**: Runs complete test workflow
+3. **File Verification**: Validates all required output files
+4. **Directory Handling**: Tests existing directory behavior
+5. **Address Validation**: Verifies Cardano address format
+
+#### Expected Output Files
+
+- `base.addr` - Base address (payment + stake)
+- `payment.addr` - Payment-only address
+- `stake.addr` - Stake-only address
+- `payment.skey` - Payment signing key
+- `stake.skey` - Stake signing key
+- Plus additional key files (.prv, .pub)
+
+#### Running Workflow Test
+
+```bash
+# Complete workflow validation
+npm run test:docker-workflow
+
+# Or run directly
+./test-docker-workflow.sh
+```
+
+### Test Environment Requirements
+
+#### For Unit Tests
+
+- Node.js 14+
+- Jest test framework
+- bip39 package
+
+#### For Docker Tests
+
+- Docker Desktop/Engine
+- 4GB+ available disk space
+- Internet access for image building
+
+#### Platform Support
+
+- **Linux**: Full support (native)
+- **macOS Intel**: Full support
+- **macOS Apple Silicon**: Full support (with QEMU emulation)
+- **Windows**: Via WSL2 + Docker Desktop
+
+### Test Data and Known Vectors
+
+All tests use the canonical test mnemonic:
+
+```bash
+abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about
+```
+
+Expected outputs:
+
+- **Master Key**: `402b03cd9c8bed9ba9f9bd6cd9c315ce...` (192 chars)
+- **First Address**: `addr1qy2vzmtlgvjrhkq50rngh8d482zj3l20kyrc6kx4ffl3zfqayfawlf9hwv2fzuygt2km5v92kvf8e3s3mk7ynxw77cwqf7zhh2`
 
 ## References
 

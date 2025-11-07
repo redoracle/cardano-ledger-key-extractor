@@ -65,14 +65,14 @@ Common use cases:
 
 ### `cardano-address: command not found`
 
-**Solution 1: Use the verification script (recommended)**
+#### **Solution 1: Use the verification script (recommended)**
 
 ```bash
 ./verify-installation.sh
 # Answer 'y' when prompted to install missing tools
 ```
 
-**Solution 2: Manual installation**
+#### **Solution 2: Manual installation**
 
 ```bash
 # Download from GitHub releases
@@ -84,7 +84,7 @@ tar -xzf cardano-addresses-${VERSION}-${ARCH}.tar.gz
 sudo mv bin/cardano-address /usr/local/bin/
 ```
 
-**Solution 3: Use Docker**
+#### **Solution 3: Use Docker**
 
 ```bash
 ./docker-run.sh full
@@ -99,8 +99,8 @@ sudo mv bin/cardano-address /usr/local/bin/
 
 ```bash
 # Download from GitHub
-wget https://github.com/input-output-hk/bech32/releases/download/v1.1.3/bech32-1.1.3-x86_64-linux.tar.gz
-tar -xzf bech32-1.1.3-x86_64-linux.tar.gz
+wget https://github.com/IntersectMBO/bech32/releases/download/v1.1.7/bech32-1.1.7-x86_64-linux.tar.gz
+tar -xzf bech32-1.1.7-x86_64-linux.tar.gz
 sudo mv bin/bech32 /usr/local/bin/
 ```
 
@@ -143,21 +143,21 @@ sudo mv bin/bech32 /usr/local/bin/
 
 ### Docker build fails
 
-**Issue: Architecture not supported**
+#### **Issue: Architecture not supported**
 
-```
+```bash
 The Dockerfile supports x86_64 and aarch64 (ARM64) only.
 ```
 
 **Solution:** The script auto-detects your architecture. If it's not supported, you'll need to compile Cardano tools from source.
 
-**Issue: Download fails during build**
+#### **Issue: Download fails during build**
 
-```
+```bash
 ERROR: failed to fetch https://github.com/...
 ```
 
-**Solution:**
+#### **Solution:**
 
 ```bash
 # Check your internet connection
@@ -182,7 +182,7 @@ node index.js --test
 
 **Expected address:**
 
-```
+```bash
 addr1qy2vzmtlgvjrhkq50rngh8d482zj3l20kyrc6kx4ffl3zfqayfawlf9hwv2fzuygt2km5v92kvf8e3s3mk7ynxw77cwqf7zhh2
 ```
 
@@ -354,7 +354,6 @@ gpg --decrypt keys-backup.tar.gz.gpg | tar xzf -
    ```
 
 3. **Wrong mnemonic**
-
    - Double-check you entered the mnemonic correctly
    - Verify word count (12/15/18/21/24 words)
    - Check for typos
@@ -381,7 +380,6 @@ cat output/base.addr
 **Solutions:**
 
 1. **Check for typos**
-
    - Every word must be from the BIP39 word list
    - Check spelling carefully
    - Watch for similar words (e.g., "abandon" vs "ability")
@@ -394,10 +392,11 @@ cat output/base.addr
    ```
 
 3. **Test with known good mnemonic**
-   ```bash
-   node index.js --test
-   # If this works, your mnemonic has an issue
-   ```
+
+```bash
+node index.js --test
+# If this works, your mnemonic has an issue
+```
 
 ### Error: "command not found: $'\r'"
 
@@ -509,7 +508,7 @@ npm test
 
 [CIP-1852](https://cips.cardano.org/cips/cip1852/) defines the HD wallet derivation scheme for Cardano:
 
-```
+```bash
 m / 1852' / 1815' / account' / role / index
 
 Where:
@@ -615,7 +614,7 @@ For multi-sig:
 3. Combine public keys into multi-sig script
 4. Each signer signs with their private key
 
-See [Cardano multi-sig documentation](https://github.com/input-output-hk/cardano-node/blob/master/doc/reference/simple-scripts.md).
+See [Cardano multi-sig documentation](https://github.com/IntersectMBO/cardano-node/blob/master/doc/reference/simple-scripts.md).
 
 ### Can I recover funds if I lose the Ledger?
 
@@ -640,18 +639,15 @@ See [Cardano multi-sig documentation](https://github.com/input-output-hk/cardano
 ## Still Have Questions?
 
 1. **Check the documentation:**
-
    - [README.md](../README.md) - Main documentation
    - [QUICKSTART.md](QUICKSTART.md) - Quick start guide
    - [SECURITY.md](SECURITY.md) - Security best practices
    - [EXAMPLES.md](EXAMPLES.md) - Usage examples
 
 2. **Search existing issues:**
-
    - [GitHub Issues](https://github.com/ilap/cardano-ledger-key-extractor/issues)
 
 3. **Open a new issue:**
-
    - Provide detailed description
    - Include system information
    - Steps to reproduce

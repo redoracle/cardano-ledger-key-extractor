@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const crypto = require("crypto");
-const bip39 = require('bip39');
+const bip39 = require("bip39");
 
 /**
  * Converts a hex string to a Uint8Array
@@ -21,8 +21,8 @@ function toByteArray(hexString) {
  * @param {Uint8Array} bytes - Byte array to convert
  * @returns {string} Hex string
  */
-const toHexString = bytes =>
-  bytes.reduce((str, byte) => str + byte.toString(16).padStart(2, '0'), '');
+const toHexString = (bytes) =>
+  bytes.reduce((str, byte) => str + byte.toString(16).padStart(2, "0"), "");
 
 /**
  * Validates a BIP39 mnemonic phrase
@@ -31,8 +31,8 @@ const toHexString = bytes =>
  * @returns {string} Trimmed and validated mnemonic
  */
 function validateMnemonic(mnemonic) {
-  if (!mnemonic || typeof mnemonic !== 'string') {
-    throw new Error('Mnemonic must be a non-empty string');
+  if (!mnemonic || typeof mnemonic !== "string") {
+    throw new Error("Mnemonic must be a non-empty string");
   }
 
   const trimmed = mnemonic.trim();
@@ -41,12 +41,12 @@ function validateMnemonic(mnemonic) {
 
   if (!validCounts.includes(wordCount)) {
     throw new Error(
-      `Invalid word count: ${wordCount}. Must be 12, 15, 18, 21, or 24 words.`
+      `Invalid word count: ${wordCount}. Must be 12, 15, 18, 21, or 24 words.`,
     );
   }
 
   if (!bip39.validateMnemonic(trimmed)) {
-    throw new Error('Invalid mnemonic checksum or word list');
+    throw new Error("Invalid mnemonic checksum or word list");
   }
 
   return trimmed;
@@ -54,9 +54,9 @@ function validateMnemonic(mnemonic) {
 
 /**
  * Generates a Ledger-compatible master key from BIP39 entropy
- * Originally from Adrestia https://input-output-hk.github.io/adrestia/docs/key-concepts/hierarchical-deterministic-wallets/
+ * Originally from Adrestia https://IntersectMBO.github.io/adrestia/docs/key-concepts/hierarchical-deterministic-wallets/
  * Modified to fix issues with the original implementation
- * 
+ *
  * @param {string} seed - BIP39 entropy (hex string)
  * @param {string} password - Optional passphrase (empty string if none)
  * @returns {Uint8Array} 96-byte master key (64-byte key + 32-byte chain code)
@@ -68,20 +68,21 @@ function generateLedgerMasterKey(seed, password) {
     "mnemonic" + password,
     2048,
     64,
-    'sha512'
+    "sha512",
   );
 
   // Generate chain code
   // Note: Adrestia's pseudo code had "1" + seed, which was incorrect
   const message = new Uint8Array([1, ...masterSeed]);
-  const cc = crypto.createHmac('sha256', "ed25519 seed")
+  const cc = crypto
+    .createHmac("sha256", "ed25519 seed")
     .update(message)
     .digest();
 
   // Hash repeatedly until we get a valid key
   const i = hashRepeatedly(masterSeed);
   const tweaked = tweakBits(i);
-  
+
   // Combine key and chain code (96 bytes total)
   const masterKey = new Uint8Array([...tweaked, ...cc]);
 
@@ -94,7 +95,8 @@ function generateLedgerMasterKey(seed, password) {
  * @returns {Buffer} Valid hashed key
  */
 function hashRepeatedly(message) {
-  const i = crypto.createHmac('sha512', "ed25519 seed")
+  const i = crypto
+    .createHmac("sha512", "ed25519 seed")
     .update(message)
     .digest();
 
@@ -169,28 +171,30 @@ function parseArgs() {
   const result = {
     testMode: false,
     mnemonic: null,
-    passphrase: '',
-    help: false
+    passphrase: "",
+    help: false,
   };
 
   for (let i = 0; i < args.length; i++) {
     switch (args[i]) {
-      case '--test':
+      case "--test":
         result.testMode = true;
         break;
-      case '--mnemonic':
+      case "--mnemonic":
         if (i + 1 < args.length) {
           result.mnemonic = args[++i];
-          console.warn('⚠️  WARNING: Using --mnemonic is insecure (visible in process list)');
+          console.warn(
+            "⚠️  WARNING: Using --mnemonic is insecure (visible in process list)",
+          );
         }
         break;
-      case '--passphrase':
+      case "--passphrase":
         if (i + 1 < args.length) {
           result.passphrase = args[++i];
         }
         break;
-      case '--help':
-      case '-h':
+      case "--help":
+      case "-h":
         result.help = true;
         break;
       default:
@@ -207,18 +211,20 @@ function parseArgs() {
  * @returns {Promise<string>} The mnemonic phrase
  */
 async function readMnemonicSecurely() {
-  const readline = require('readline');
-  
+  const readline = require("readline");
+
   const rl = readline.createInterface({
     input: process.stdin,
-    output: process.stdout
+    output: process.stdout,
   });
 
   return new Promise((resolve) => {
-    console.log('\n⚠️  SECURITY WARNING: Ensure you are on an OFFLINE, air-gapped machine!');
-    console.log('Type or paste your mnemonic phrase below:');
-    
-    rl.question('Mnemonic (12-24 words): ', (answer) => {
+    console.log(
+      "\n⚠️  SECURITY WARNING: Ensure you are on an OFFLINE, air-gapped machine!",
+    );
+    console.log("Type or paste your mnemonic phrase below:");
+
+    rl.question("Mnemonic (12-24 words): ", (answer) => {
       rl.close();
       resolve(answer);
     });
@@ -239,17 +245,20 @@ async function main() {
     }
 
     let mnemonic;
-    let passphrase = args.passphrase || process.env.PASSPHRASE || '';
+    let passphrase = args.passphrase || process.env.PASSPHRASE || "";
 
     // Determine mnemonic source
     if (args.testMode) {
-      console.log('⚠️  TEST MODE: Using canonical test mnemonic');
-      console.log('Expected first address: addr1qy2vzmtlgvjrhkq50rngh8d482zj3l20kyrc6kx4ffl3zfqayfawlf9hwv2fzuygt2km5v92kvf8e3s3mk7ynxw77cwqf7zhh2\n');
-      mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
+      console.log("⚠️  TEST MODE: Using canonical test mnemonic");
+      console.log(
+        "Expected first address: addr1qy2vzmtlgvjrhkq50rngh8d482zj3l20kyrc6kx4ffl3zfqayfawlf9hwv2fzuygt2km5v92kvf8e3s3mk7ynxw77cwqf7zhh2\n",
+      );
+      mnemonic =
+        "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
     } else if (args.mnemonic) {
       mnemonic = args.mnemonic;
     } else if (process.env.MNEMONIC) {
-      console.warn('⚠️  WARNING: Using MNEMONIC from environment variable');
+      console.warn("⚠️  WARNING: Using MNEMONIC from environment variable");
       mnemonic = process.env.MNEMONIC;
     } else if (!process.stdin.isTTY) {
       // Reading from pipe/stdin
@@ -257,7 +266,7 @@ async function main() {
       for await (const chunk of process.stdin) {
         chunks.push(chunk);
       }
-      mnemonic = Buffer.concat(chunks).toString('utf8').trim();
+      mnemonic = Buffer.concat(chunks).toString("utf8").trim();
     } else {
       // Interactive mode
       mnemonic = await readMnemonicSecurely();
@@ -273,11 +282,15 @@ async function main() {
 
     // Output result
     console.log(`\nLedger Master Key: ${masterString}`);
-    
+
     if (!args.testMode) {
-      console.log('\n✓ Master key generated successfully');
-      console.log('⚠️  Keep this key secure! It can be used to derive all your wallet keys.');
-      console.log('Next step: Use convert.sh to generate Cardano addresses and keys\n');
+      console.log("\n✓ Master key generated successfully");
+      console.log(
+        "⚠️  Keep this key secure! It can be used to derive all your wallet keys.",
+      );
+      console.log(
+        "Next step: Use convert.sh to generate Cardano addresses and keys\n",
+      );
     }
 
     // Clean up sensitive data from memory
@@ -285,18 +298,17 @@ async function main() {
     passphrase = null;
 
     process.exit(0);
-
   } catch (error) {
     console.error(`\n❌ Error: ${error.message}`);
-    
+
     // Show stack trace in debug mode
     if (process.env.DEBUG) {
-      console.error('\nStack trace:');
+      console.error("\nStack trace:");
       console.error(error.stack);
     } else {
-      console.error('(Run with DEBUG=1 for detailed error information)');
+      console.error("(Run with DEBUG=1 for detailed error information)");
     }
-    
+
     process.exit(1);
   }
 }
@@ -313,5 +325,5 @@ module.exports = {
   toHexString,
   toByteArray,
   hashRepeatedly,
-  tweakBits
+  tweakBits,
 };

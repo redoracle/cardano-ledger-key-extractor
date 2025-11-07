@@ -18,14 +18,12 @@
 ### What We're Protecting Against
 
 1. **Network Attacks**
-
    - Keyloggers and malware on internet-connected machines
    - Man-in-the-middle attacks during key generation
    - Remote access trojans (RATs)
    - Network sniffing of sensitive data
 
 2. **Local Attacks**
-
    - Shoulder surfing during mnemonic entry
    - Screen recording malware
    - Clipboard hijacking
@@ -33,7 +31,6 @@
    - Forensic recovery of deleted keys
 
 3. **Supply Chain Attacks**
-
    - Compromised dependencies
    - Malicious code in binaries
    - Backdoored tools
@@ -72,13 +69,11 @@
    ```
 
 2. **Operating System:**
-
    - Use a clean OS installation
    - Linux (Ubuntu, Debian) or Tails OS recommended
    - Verify installation media checksum before use
 
 3. **Transfer Files:**
-
    - Use USB drives with write-protect switches
    - Scan USB drives for malware on a separate machine
    - Transfer only necessary files
@@ -105,14 +100,12 @@
 **Use a temporarily disconnected machine:**
 
 1. **Preparation:**
-
    - Disconnect all network cables
    - Disable WiFi and Bluetooth in OS settings
    - Boot into airplane mode
    - Verify no network connections
 
 2. **During Use:**
-
    - Keep machine physically isolated
    - No USB devices except verified tools
    - No cameras or microphones nearby
@@ -143,7 +136,6 @@ docker run --rm -it --network none alpine ping -c 1 8.8.8.8
 ### Before Starting
 
 1. **Environment Check:**
-
    - [ ] Machine is offline (air-gapped or disconnected)
    - [ ] No cameras or microphones recording
    - [ ] Private location (no shoulder surfing)
@@ -165,10 +157,11 @@ docker run --rm -it --network none alpine ping -c 1 8.8.8.8
    ```
 
 3. **Test First:**
-   ```bash
-   # Always test with the canonical test mnemonic first
-   node index.js --test
-   ```
+
+```bash
+# Always test with the canonical test mnemonic first
+node index.js --test
+```
 
 ### During Key Generation
 
@@ -184,7 +177,6 @@ docker run --rm -it --network none alpine ping -c 1 8.8.8.8
    ```
 
 2. **Monitor for Errors:**
-
    - Watch for unexpected behavior
    - Check audit logs after generation
    - Verify addresses match expected format
@@ -211,7 +203,6 @@ docker run --rm -it --network none alpine ping -c 1 8.8.8.8
    ```
 
 2. **Secure Backup:**
-
    - Encrypt all files before backup
    - Use strong encryption (AES-256)
    - Store backups in physically secure locations
@@ -250,13 +241,11 @@ openssl enc -d -aes-256-cbc -pbkdf2 -in keys-backup.tar.gz.enc | tar xzf -
 **Best Practices:**
 
 1. **Hardware Security Module (HSM)**
-
    - YubiKey with GPG
    - Ledger device (for pool operations)
    - Dedicated HSM hardware
 
 2. **Encrypted USB Drives**
-
    - Use hardware-encrypted USB drives
    - Store in physically secure locations
    - Multiple copies in different locations
@@ -357,7 +346,6 @@ sudo reboot
 **CRITICAL: Always verify generated addresses match your Ledger device.**
 
 1. **Connect Ledger to Verification Machine:**
-
    - Use a DIFFERENT machine (not the generation machine)
    - Machine can be online for this step
    - Open Ledger Cardano app
@@ -446,7 +434,6 @@ sudo reboot
    ```
 
 2. **Assess Impact:**
-
    - What keys might be compromised?
    - Were funds already moved?
    - What data was accessible?
@@ -473,7 +460,6 @@ sudo reboot
 **CRITICAL: This is the worst-case scenario.**
 
 1. **Immediate:**
-
    - Transfer ALL funds to new wallet immediately
    - Generate new mnemonic on Ledger device
    - Do NOT reuse any derived keys
@@ -524,7 +510,6 @@ If you discover a security vulnerability:
 
 1. **DO NOT** open a public issue
 2. Email the maintainer privately with:
-
    - Description of the vulnerability
    - Steps to reproduce
    - Potential impact

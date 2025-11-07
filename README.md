@@ -18,9 +18,9 @@ This toolkit enables Cardano stake pool operators to extract Shelley-era staking
 
 - 🚀 [Quick Start Guide](docs/QUICKSTART.md) - Get started in 5 minutes
 - 🐳 [Docker Guide](docs/DOCKER.md) - Run in isolated container (recommended)
-- � [Security Guide](docs/SECURITY.md) - Detailed security best practices
+- 🛡️ [Security Guide](docs/SECURITY.md) - Detailed security best practices
 - ❓ [FAQ](docs/FAQ.md) - Common issues and solutions
-- �📖 [Glossary](docs/GLOSSARY.md) - Understand Cardano key management terms
+- 📖 [Glossary](docs/GLOSSARY.md) - Understand Cardano key management terms
 - 🧪 [Testing Guide](docs/TESTING.md) - Test before using with real keys
 - 💡 [Examples](docs/EXAMPLES.md) - Step-by-step usage examples
 - 🔧 [Requirements](docs/REQUIREMENTS.md) - Detailed installation instructions
@@ -51,12 +51,12 @@ This toolkit enables Cardano stake pool operators to extract Shelley-era staking
 
 Install these binaries and ensure they're in your `PATH`:
 
-| Tool                | Purpose                           | Installation                                                                          |
-| ------------------- | --------------------------------- | ------------------------------------------------------------------------------------- |
-| **cardano-address** | Key derivation & address building | [cardano-wallet releases](https://github.com/input-output-hk/cardano-wallet/releases) |
-| **cardano-cli**     | Key conversion & verification     | [cardano-node releases](https://github.com/input-output-hk/cardano-node/releases)     |
-| **bech32**          | Encoding/decoding bech32 format   | [bech32 tool](https://github.com/input-output-hk/bech32)                              |
-| **Node.js**         | Running JavaScript key generation | [nodejs.org](https://nodejs.org/)                                                     |
+| Tool                | Purpose                           | Installation                                                                             |
+| ------------------- | --------------------------------- | ---------------------------------------------------------------------------------------- |
+| **cardano-address** | Key derivation & address building | [cardano-wallet releases](https://github.com/cardano-foundation/cardano-wallet/releases) |
+| **cardano-cli**     | Key conversion & verification     | [cardano-node releases](https://github.com/IntersectMBO/cardano-node/releases)           |
+| **bech32**          | Encoding/decoding bech32 format   | [bech32 tool](https://github.com/IntersectMBO/bech32)                                    |
+| **Node.js**         | Running JavaScript key generation | [nodejs.org](https://nodejs.org/)                                                        |
 
 ### Verify Installation
 
@@ -282,7 +282,7 @@ After running the conversion, you'll find these files in your output directory:
 
 **bech32 tool not found:**
 
-- Install from [bech32 repo](https://github.com/input-output-hk/bech32)
+- Install from [bech32 repo](https://github.com/IntersectMBO/bech32)
 - Or use newer cardano-address (≥3.0.0) which doesn't require it
 
 **Version compatibility issues:**
@@ -325,11 +325,11 @@ See [Testing Guide](docs/TESTING.md) for comprehensive testing instructions.
 
   - [CIP-1852](https://cips.cardano.org/cips/cip1852/) - HD Wallets for Cardano
   - [BIP39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki) - Mnemonic code for generating deterministic keys
-  - [ed25519-bip32](https://input-output-hk.github.io/adrestia/static/Ed25519_BIP.pdf) - Hierarchical Deterministic Keys over ed25519
 
 - **Tools & Documentation:**
 
-  - [Adrestia Documentation](https://input-output-hk.github.io/adrestia/)
+  - [ed25519-bip32](https://IntersectMBO.github.io/adrestia/static/Ed25519_BIP.pdf) - Hierarchical Deterministic Keys over ed25519
+  - [Adrestia Documentation](https://IntersectMBO.github.io/adrestia/)
   - [cardano-node](https://github.com/IntersectMBO/cardano-node) - Cardano CLI
   - [cardano-addresses](https://github.com/IntersectMBO/cardano-addresses) - Address derivation
 

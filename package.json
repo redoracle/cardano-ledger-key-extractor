@@ -1,4 +1,5 @@
 {
+  "$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/package.json",
   "name": "cardano-ledger-key-extractor",
   "version": "2.0.0",
   "description": "Extract Cardano Shelley staking keys from a Ledger wallet by deriving the Ledger master key from BIP39 recovery phrase",
@@ -17,8 +18,12 @@
     "test:coverage": "jest --coverage",
     "test:verbose": "jest --verbose",
     "test:integration": "node index.js --test",
+    "test:docker": "jest docker.test.js --verbose --detectOpenHandles",
+    "test:docker-workflow": "./test-docker-workflow.sh",
+    "test:unit": "jest index.test.js --verbose",
+    "test:all": "jest --verbose --detectOpenHandles",
     "lint": "echo 'Install eslint for linting: npm install --save-dev eslint'",
-    "format": "echo 'Install prettier for formatting: npm install --save-dev prettier'"
+    "format": "prettier --write '**/*.{js,ts,jsx,tsx,json,css,md}'"
   },
   "jest": {
     "testEnvironment": "node",

@@ -200,7 +200,6 @@ wsl --install -d Ubuntu-22.04
 #### ✅ MANDATORY Requirements
 
 1. **Air-Gapped Machine**
-
    - No WiFi hardware (disabled or removed)
    - No Ethernet cable connected
    - Bluetooth disabled
@@ -208,14 +207,12 @@ wsl --install -d Ubuntu-22.04
    - Never connect to any network after key generation
 
 2. **Physical Security**
-
    - Locked room or secure location
    - No cameras (including smartphones)
    - No other people present
    - Screen not visible from windows
 
 3. **Software Environment**
-
    - Fresh OS installation or known-clean system
    - Minimal software installed
    - All tools verified (checksums)
@@ -223,7 +220,6 @@ wsl --install -d Ubuntu-22.04
    - No cloud sync services
 
 4. **Storage Security**
-
    - Full disk encryption (LUKS, FileVault, BitLocker)
    - BIOS/UEFI password
    - Strong user password
@@ -239,14 +235,12 @@ wsl --install -d Ubuntu-22.04
 #### ⚠️ Recommended Additional Security
 
 1. **Hardware Security**
-
    - Remove/disable microphone
    - Remove/disable camera
    - Use Faraday cage or bag when transporting
    - Hardware security module (HSM) for final keys
 
 2. **Verification**
-
    - Verify all tool checksums before installation
    - Build tools from source if possible
    - Test with known mnemonics first
@@ -359,7 +353,7 @@ sudo apt-get install -y nodejs
 ```bash
 # Download from official releases
 CARDANO_VERSION="10.13.1.0"
-wget https://github.com/input-output-hk/cardano-node/releases/download/${CARDANO_VERSION}/cardano-node-${CARDANO_VERSION}-linux.tar.gz
+wget https://github.com/IntersectMBO/cardano-node/releases/download/${CARDANO_VERSION}/cardano-node-${CARDANO_VERSION}-linux.tar.gz
 
 # Extract
 tar -xzf cardano-node-${CARDANO_VERSION}-linux.tar.gz
@@ -377,10 +371,10 @@ cardano-cli --version
 ```bash
 # Download from cardano-wallet releases
 CARDANO_ADDRESS_VERSION="4.0.1"
-wget https://github.com/input-output-hk/cardano-wallet/releases/download/v2024-03-27/cardano-wallet-v2024-03-27-linux64.tar.gz
+wget https://github.com/cardano-foundation/cardano-wallet/releases/download/v2025-03-31/cardano-wallet-v2025-03-31-linux64.tar.gz
 
 # Extract
-tar -xzf cardano-wallet-v2024-03-27-linux64.tar.gz
+tar -xzf cardano-wallet-v2025-03-31-linux64.tar.gz
 
 # Move to PATH
 sudo mv cardano-address /usr/local/bin/
@@ -394,7 +388,7 @@ cardano-address --version
 
 ```bash
 # Download from releases or compile from source
-wget https://github.com/input-output-hk/bech32/releases/download/v1.1.720/bech32-1.1.720-linux.tar.gz
+wget https://github.com/IntersectMBO/bech32/releases/download/v1.1.720/bech32-1.1.720-linux.tar.gz
 tar -xzf bech32-1.1.720-linux.tar.gz
 sudo mv bech32 /usr/local/bin/
 sudo chmod +x /usr/local/bin/bech32
@@ -411,7 +405,7 @@ bech32 --version
 
 # Example for downloading binaries
 CARDANO_VERSION="10.13.1.0"
-wget https://github.com/input-output-hk/cardano-node/releases/download/${CARDANO_VERSION}/cardano-node-${CARDANO_VERSION}-macos.tar.gz
+wget https://github.com/IntersectMBO/cardano-node/releases/download/${CARDANO_VERSION}/cardano-node-${CARDANO_VERSION}-macos.tar.gz
 
 # Extract and install similar to Linux
 tar -xzf cardano-node-${CARDANO_VERSION}-macos.tar.gz
@@ -437,7 +431,7 @@ sudo apt-get install -y \
 curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
 
 # Clone and build cardano-node
-git clone https://github.com/input-output-hk/cardano-node
+git clone https://github.com/IntersectMBO/cardano-node
 cd cardano-node
 git checkout tags/10.13.1.0
 cabal build cardano-cli
@@ -660,7 +654,6 @@ unset ACCOUNT ADDRESS_INDEX CARDANO_NETWORK
 ### Getting Help
 
 1. **Check Documentation**:
-
    - README.md - Main documentation
    - EXAMPLES.md - Usage examples
    - IMPROVEMENTS.md - Known issues
@@ -748,8 +741,8 @@ mkdir cardano-offline-tools
 cd cardano-offline-tools
 
 # Download all tools
-wget https://github.com/input-output-hk/cardano-node/releases/download/10.13.1.0/cardano-node-10.13.1.0-linux.tar.gz
-wget https://github.com/input-output-hk/cardano-wallet/releases/download/v2024-03-27/cardano-wallet-v2024-03-27-linux64.tar.gz
+wget https://github.com/IntersectMBO/cardano-node/releases/download/10.13.1.0/cardano-node-10.13.1.0-linux.tar.gz
+wget https://github.com/cardano-foundation/cardano-wallet/releases/download/v2025-03-31/cardano-wallet-v2025-03-31-linux64.tar.gz
 wget https://nodejs.org/dist/v20.11.0/node-v20.11.0-linux-x64.tar.xz
 
 # Clone this repository

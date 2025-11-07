@@ -88,6 +88,7 @@ ${BLUE}Commands:${NC}
   ${GREEN}convert${NC}           Convert master key to Cardano keys
   ${GREEN}full${NC}              Run full process (generate + convert)
   ${GREEN}test${NC}              Run test with example mnemonic
+  ${GREEN}test-keys${NC}         Generate test keys only (no output volume)
   ${GREEN}shell${NC}             Open a shell in the container
   ${GREEN}help${NC}              Show this help message
 
@@ -199,7 +200,7 @@ run_convert() {
         -e "OUTPUT_DIR=/output" \
         -e "NON_INTERACTIVE=1" \
         "$IMAGE_NAME" \
-        sh -c "echo '$MASTER_KEY' | ./convert.sh"
+        sh -c "echo '$MASTER_KEY' | ./convert.sh /output"
     
     print_success "Keys generated successfully in $OUTPUT_DIR/"
 }
@@ -226,7 +227,7 @@ run_full() {
         -e "OUTPUT_DIR=/output" \
         -e "NON_INTERACTIVE=1" \
         "$IMAGE_NAME" \
-        sh -c 'MASTER_KEY=$(node index.js | tail -1 | grep -oE "[0-9a-f]{192}") && echo "$MASTER_KEY" | ./convert.sh'
+        sh -c 'MASTER_KEY=$(node index.js | tail -1 | grep -oE "[0-9a-f]{192}") && echo "$MASTER_KEY" | ./convert.sh /output'
     
     print_success "Process completed! Check $OUTPUT_DIR/ for generated keys"
 }
@@ -235,6 +236,9 @@ run_test() {
     print_warning "Running with TEST mnemonic (not for production use!)"
     ensure_image
     ensure_output_dir
+    
+    print_info "Testing complete workflow with canonical test mnemonic..."
+    echo ""
     
     docker run --rm -it \
         $PLATFORM_FLAG \
@@ -245,6 +249,24 @@ run_test() {
         --tmpfs /tmp:mode=1777,size=100M \
         -v "$(pwd)/$OUTPUT_DIR:/output" \
         -e "CARDANO_NETWORK=${CARDANO_NETWORK:-mainnet}" \
+        -e "NON_INTERACTIVE=1" \
+        "$IMAGE_NAME" \
+        sh -c 'MASTER_KEY=$(node index.js --test | grep "Ledger Master Key" | awk "{print \$4}") && echo "$MASTER_KEY" | ./convert.sh /output'
+    
+    print_success "Test completed! Check $OUTPUT_DIR/ for generated test keys"
+}
+
+run_test_mnemonic_only() {
+    print_warning "Running with TEST mnemonic (not for production use!)"
+    ensure_image
+    
+    docker run --rm -it \
+        $PLATFORM_FLAG \
+        --network none \
+        --security-opt no-new-privileges:true \
+        --cap-drop ALL \
+        --read-only \
+        --tmpfs /tmp:mode=1777,size=100M \
         "$IMAGE_NAME" \
         node index.js --test
 }
@@ -283,6 +305,9 @@ case "$COMMAND" in
         ;;
     test)
         run_test
+        ;;
+    test-keys)
+        run_test_mnemonic_only
         ;;
     shell)
         run_shell

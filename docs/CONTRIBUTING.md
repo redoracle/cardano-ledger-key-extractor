@@ -502,4 +502,4 @@ Thank you for contributing! 🎉
 
 ---
 
-**Happy Coding! Made with ❤️ for the Cardano community**
+### Happy Coding! Made with ❤️ for the Cardano community

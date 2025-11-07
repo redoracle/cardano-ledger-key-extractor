@@ -12,6 +12,7 @@ coverage
 .idea
 output/
 keys/
+test_output/
 *.swp
 *.swo
 *~

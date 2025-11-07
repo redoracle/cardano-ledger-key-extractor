@@ -436,8 +436,8 @@ Windows Subsystem for Linux version 2 - runs a real Linux kernel inside Windows 
 - **CIP-1852:** Cardano HD Wallet Standard - <https://cips.cardano.org/cips/cip1852/>
 - **BIP39:** Mnemonic Code Standard - <https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki>
 - **BIP32:** HD Wallet Specification - <https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki>
-- **ed25519-bip32:** Cardano's Key Derivation - <https://input-output-hk.github.io/adrestia/static/Ed25519_BIP.pdf>
-- **Adrestia Documentation:** <https://input-output-hk.github.io/adrestia/>
+- **ed25519-bip32:** Cardano's Key Derivation - <https://IntersectMBO.github.io/adrestia/static/Ed25519_BIP.pdf>
+- **Adrestia Documentation:** <https://IntersectMBO.github.io/adrestia/>
 - **Cardano Documentation:** <https://docs.cardano.org/>
 
 ---

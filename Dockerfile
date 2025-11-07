@@ -1,7 +1,7 @@
 FROM node:20-slim AS base
 
-# Install dependencies (Debian-based, native glibc support)
-RUN apt-get update && apt-get install -y \
+# Install dependencies (Debian-based, native glibc support) and upgrade packages to reduce known vulnerabilities
+RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
     bash \
     curl \
     jq \
@@ -10,13 +10,14 @@ RUN apt-get update && apt-get install -y \
     gzip \
     ca-certificates \
     wget \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
 # Set working directory
 WORKDIR /app
 
-# Copy scripts that will be tested
+# Copy scripts and package files that will be tested
 COPY verify-installation.sh convert.sh generate-mnemonic.js ./
+COPY package*.json ./
 
 # Install Cardano tools using the verification script  
 # Skip tests in Docker build (they'll be run when container starts)
@@ -38,14 +39,11 @@ RUN chmod +x verify-installation.sh convert.sh generate-mnemonic.js && \
 # Final application stage
 FROM base AS app 
 
-# Copy package files
-COPY package*.json ./
-
 # Install Node.js dependencies
-RUN npm ci --only=production && \
+RUN npm ci --omit=dev && \
     npm cache clean --force
 
-# Copy application files (convert.sh already copied in base stage)
+# Copy application files (convert.sh and generate-mnemonic.js already copied in base stage)
 COPY index.js index.d.ts ./
 COPY docs/ ./docs/
 
@@ -65,8 +63,8 @@ ENV NODE_ENV=production \
 VOLUME ["/output"]
 
 # Security: Run as non-root user
-RUN addgroup -S cardano && \
-    adduser -S -G cardano cardano && \
+RUN groupadd -r cardano && \
+    useradd -r -g cardano -s /bin/bash cardano && \
     chown -R cardano:cardano /app /output
 
 USER cardano

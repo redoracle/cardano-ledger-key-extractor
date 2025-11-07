@@ -55,14 +55,14 @@ progress "Checking required tools..."
 CADDR=${CADDR:=$( which cardano-address 2>/dev/null || true )}
 [[ -z "$CADDR" ]] && {
     error "cardano-address cannot be found in PATH"
-    echo "Install from: https://github.com/input-output-hk/cardano-wallet/releases" >&2
+    echo "Install from: https://github.com/IntersectMBO/cardano-wallet/releases" >&2
     exit 127
 }
 
 CCLI=${CCLI:=$( which cardano-cli 2>/dev/null || true )}
 [[ -z "$CCLI" ]] && {
     error "cardano-cli cannot be found in PATH"
-    echo "Install from: https://github.com/input-output-hk/cardano-node/releases" >&2
+    echo "Install from: https://github.com/IntersectMBO/cardano-node/releases" >&2
     exit 127
 }
 
@@ -260,12 +260,48 @@ fi
 
 # Create output directory
 if [[ -e "$OUT_DIR" ]]; then
-    error "Output directory \"$OUT_DIR\" already exists"
-    echo "Please delete it or choose a different name" >&2
-    exit 1
+    if [[ "${NON_INTERACTIVE:-0}" == "1" ]]; then
+        # In non-interactive mode, clean and reuse the directory
+        warning "Output directory \"$OUT_DIR\" already exists - cleaning it for reuse"
+        # Only clean contents, don't remove the directory itself (for Docker read-only filesystems)
+        rm -rf "$OUT_DIR"/* 2>/dev/null || true
+        rm -rf "$OUT_DIR"/.* 2>/dev/null || true  # Remove hidden files too
+        # Ensure directory exists in case it was empty
+        mkdir -p "$OUT_DIR" 2>/dev/null || true
+    else
+        # Interactive mode - give user options
+        echo ""
+        warning "Output directory \"$OUT_DIR\" already exists"
+        echo "Options:"
+        echo "  1) Clean and reuse the directory"
+        echo "  2) Create a timestamped directory (${OUT_DIR}_$(date +%Y%m%d_%H%M%S))"
+        echo "  3) Exit and let you choose manually"
+        echo ""
+        read -p "Choose option [1-3]: " choice
+        case "$choice" in
+            1)
+                warning "Cleaning and reusing directory: $OUT_DIR"
+                rm -rf "$OUT_DIR"/* 2>/dev/null || true
+                rm -rf "$OUT_DIR"/.* 2>/dev/null || true
+                ;;
+            2)
+                OUT_DIR="${OUT_DIR}_$(date +%Y%m%d_%H%M%S)"
+                success "Using timestamped directory: $OUT_DIR"
+                mkdir -p "$OUT_DIR"
+                ;;
+            3)
+                echo "Exiting. Please delete the directory or choose a different name."
+                exit 1
+                ;;
+            *)
+                error "Invalid choice. Exiting."
+                exit 1
+                ;;
+        esac
+    fi
+else
+    mkdir -p "$OUT_DIR"
 fi
-
-mkdir -p "$OUT_DIR"
 pushd "$OUT_DIR" >/dev/null
 
 progress "Step 1/7: Generating root private key..."
