@@ -1,0 +1,56 @@
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+# package-lock.json - Keep this for reproducible builds
+
+# Local binary installations
+bin/
+
+# Generated key files - NEVER COMMIT THESE!
+*.prv
+*.xprv
+*.xpub
+*.skey
+*.vkey
+*.addr
+root.prv
+stake.*
+payment.*
+base.*
+
+# Output directories
+output_*/
+output/*
+!output/README.md
+my_keys/
+ledger_output_*/
+test_output/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment files that might contain secrets
+.env
+.env.local
+*.key
+*.pem
+
+# Any directory that might contain derived keys
+keys/
+private/
+secrets/
+
+# Generated coverage reports
+coverage/
+.nyc_output/
+
+install.log

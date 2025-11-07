@@ -1,0 +1,4 @@
+# Test Mnemonic (Generated for testing - NOT FOR PRODUCTION)
+# This is a random 24-word BIP39 phrase for testing the complete workflow
+
+abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon art

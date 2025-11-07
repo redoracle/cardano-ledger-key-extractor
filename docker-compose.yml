@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  ghcr.io/redoracle/cardano-ledger-key-extractor:latest:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      platforms:
+        - linux/amd64
+    image: ghcr.io/redoracle/cardano-ledger-key-extractor:latest
+    platform: linux/amd64
+    container_name: ghcr.io/redoracle/cardano-ledger-key-extractor:latest
+    volumes:
+      # Mount output directory to host
+      - ./output:/output
+    environment:
+      # Network selection: mainnet, testnet, preprod, preview
+      - CARDANO_NETWORK=mainnet
+      # Account and address indices
+      - ACCOUNT=0
+      - ADDRESS_INDEX=0
+      # Docker-specific settings
+      - OUTPUT_DIR=/output
+      - NON_INTERACTIVE=1
+    # Security settings
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    read_only: true
+    tmpfs:
+      - /tmp:mode=1777,size=100M
+    # No network access for security
+    network_mode: none
+    # Override command as needed
+    # Example: command: ["sh", "-c", "node index.js && ./convert.sh /output"]
+    stdin_open: true
+    tty: true
