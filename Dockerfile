@@ -1,6 +1,6 @@
 # Use Node.js 20-slim LTS for stability (Dependabot wanted 25-slim but has GPG signature issues)
 # TODO: Monitor Node.js 25-slim repository fixes and upgrade when stable
-FROM node:20-slim AS base
+FROM node:25-slim AS base
 
 # Install dependencies with APT signature workaround for Docker Desktop clock skew issues
 ENV DEBIAN_FRONTEND=noninteractive
