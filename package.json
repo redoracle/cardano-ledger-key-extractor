@@ -86,7 +86,7 @@
     "bip39": "^3.0.2"
   },
   "devDependencies": {
-    "eslint": "^9.39.1",
+    "eslint": "^9.39.2",
     "eslint-config-node": "^4.1.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-security": "^3.0.1",
