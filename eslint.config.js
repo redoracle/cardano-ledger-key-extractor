@@ -1,8 +1,14 @@
 const js = require("@eslint/js");
+const pluginSecurity = require("eslint-plugin-security");
 
 module.exports = [
-  // Base configuration for all files
+  // Base ESLint recommended rules
   js.configs.recommended,
+
+  // Security plugin recommended rules (14 rules, all set to "warn" by default)
+  pluginSecurity.configs.recommended,
+
+  // Base configuration for all files
   {
     languageOptions: {
       ecmaVersion: 2022,
@@ -49,8 +55,18 @@ module.exports = [
 
       // Relaxed magic numbers for crypto constants
       "no-magic-numbers": "off", // Crypto code has many valid constants
+
+      // Security plugin rule overrides (tuned for crypto project)
+      // Defaults from recommended are "warn"; escalate critical ones to "error"
+      "security/detect-buffer-noassert": "error",
+      "security/detect-eval-with-expression": "error",
+      "security/detect-object-injection": "off", // Too many false positives in crypto code
+      "security/detect-possible-timing-attacks": "error",
+      "security/detect-pseudoRandomBytes": "error",
+      "security/detect-unsafe-regex": "error",
     },
   },
+
   // Override for test files
   {
     files: ["tests/**/*.js", "**/*.test.js"],
@@ -93,8 +109,21 @@ module.exports = [
         },
       ],
       "no-magic-numbers": "off", // Test files have many test constants
+
+      // Security rule overrides for test files
+      "security/detect-non-literal-fs-filename": "off",
+      "security/detect-non-literal-regexp": "off",
     },
   },
+
+  // Override for script/test-runner files (allow child_process usage)
+  {
+    files: ["scripts/**/*.js", "tests/test-*.js"],
+    rules: {
+      "security/detect-child-process": "off",
+    },
+  },
+
   // Ignore patterns
   {
     ignores: ["node_modules/", "coverage/", "dist/", "build/", "docs/", "*.md"],
