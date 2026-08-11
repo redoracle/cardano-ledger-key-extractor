@@ -116,9 +116,9 @@ module.exports = [
     },
   },
 
-  // Override for script/test-runner files (allow child_process usage)
+  // Override for test-runner files (allow child_process usage)
   {
-    files: ["scripts/**/*.js", "tests/test-*.js"],
+    files: ["tests/test-*.js"],
     rules: {
       "security/detect-child-process": "off",
     },

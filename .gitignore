@@ -54,3 +54,5 @@ coverage/
 .nyc_output/
 
 install.log
+._*
+.release-prepared
